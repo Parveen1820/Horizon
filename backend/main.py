@@ -1,5 +1,8 @@
+from routes.process import router as process_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from routes.system import router as system_router
 
 app = FastAPI(title="Horizon API")
 
@@ -11,23 +14,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(system_router)
+app.include_router(process_router)
+
 
 @app.get("/")
 def root():
     return {
         "message": "Horizon backend is running!",
         "status": "success"
-    }
-
-
-@app.get("/health")
-def health():
-    return {"status": "healthy"}
-
-
-@app.get("/api/test")
-def api_test():
-    return {
-        "message": "Hello from FastAPI!",
-        "connected": True
     }
