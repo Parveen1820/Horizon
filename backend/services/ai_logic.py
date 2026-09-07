@@ -105,10 +105,18 @@ def train_classification_model(
             f"Target column '{target_column}' was not found."
         )
 
-    # Remove rows where target is missing
+       # Remove rows where target is missing
     df = df.dropna(
         subset=[target_column]
     ).copy()
+
+    # Remove duplicate rows
+    duplicate_rows_removed = int(
+        df.duplicated().sum()
+    )
+
+    if duplicate_rows_removed > 0:
+        df = df.drop_duplicates().copy()
 
     if len(df) < 10:
         raise ValueError(
@@ -557,10 +565,7 @@ def train_classification_model(
                 .sum()
                 .sum()
             ),
-            "duplicate_rows": int(
-                df.duplicated()
-                .sum()
-            ),
+            "duplicate_rows": duplicate_rows_removed,
             "removed_unusable_columns": (
                 unusable_columns
             ),
